@@ -17,7 +17,7 @@ def convertDuration(duration):
 
 def getClassDate(df):
     dt = convertToDatetime([df.loc['Hora de início da reunião']['Resumo da Reunião']])
-    return dt[0].replace(hour=0, minute=0, second=0)
+    return dt[0].strftime('%d/%m')
 
 def isPresent(spreadsheet):
     presenca = []
@@ -43,9 +43,8 @@ def generateAttendenceSheet(ssIn, output, date):
     try:
         ssOut = read_excel(output)
         ssOut = ssOut.astype({'Matrícula': str})
-        df = merge(ssOut[['Matrícula', 'Nome']], ssIn, how='left',on='Matrícula')
-        df[date].fillna(int(0), inplace=True)
-        ssOut[date] = df[date]
+        ssOut = merge(ssOut, ssIn, how='left',on='Matrícula')
+        ssOut[date].fillna(int(0), inplace=True)
         ssOut.to_excel(output,index=False)
         return True
     except:
