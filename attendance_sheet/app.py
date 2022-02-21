@@ -1,4 +1,3 @@
-
 from tkinter import Tk, StringVar, Label, Button, Entry, filedialog, W
 from os.path import exists
 import generator as gp
@@ -25,10 +24,12 @@ def checkFileExist(file):
 
 def cmdSearchFileIn():
     filename = filedialog.askopenfilename()
+    result.set("")
     textIn.set(filename)
 
 def cmdSearchFileOut():
     filename = filedialog.askopenfilename()
+    result.set("")
     textOut.set(filename)
     
 screen = Tk()

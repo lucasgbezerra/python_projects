@@ -17,7 +17,7 @@ def convertDuration(duration):
 
 def getClassDate(df):
     dt = convertToDatetime([df.loc['Hora de início da reunião']['Resumo da Reunião']])
-    return dt[0].strftime('%d/%m/%Y')
+    return dt[0].replace(hour=0, minute=0, second=0)
 
 def isPresent(spreadsheet):
     presenca = []
@@ -25,9 +25,9 @@ def isPresent(spreadsheet):
     minDuration = spreadsheet['Duração'].mean() * percent
     for d in spreadsheet['Duração']:
         if d >= minDuration:
-            presenca.append('1')
+            presenca.append(int(1))
         else:
-            presenca.append('0')
+            presenca.append(int(0))
     return presenca
 
 def getId(lst):
@@ -38,12 +38,14 @@ def totalTime(df):
     result.drop_duplicates(subset=['Matrícula'],inplace=True)
     return result
 
+
 def generateAttendenceSheet(ssIn, output, date):
     try:
         ssOut = read_excel(output)
         ssOut = ssOut.astype({'Matrícula': str})
-        ssOut = merge(ssOut, ssIn, how='left',on='Matrícula')
-        ssOut[date].fillna('0', inplace=True)
+        df = merge(ssOut[['Matrícula', 'Nome']], ssIn, how='left',on='Matrícula')
+        df[date].fillna(int(0), inplace=True)
+        ssOut[date] = df[date]
         ssOut.to_excel(output,index=False)
         return True
     except:
